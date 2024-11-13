@@ -1,0 +1,49 @@
+service: usuarios-api
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+  stage: dev
+  environment:
+    USERS_TABLE: Usuarios
+    JWT_SECRET: your-secret-key
+
+functions:
+  createUser:
+    handler: src/handlers/create_user.create_user
+    events:
+      - http:
+          path: usuarios/crear
+          method: post
+
+  loginUser:
+    handler: src/handlers/login_user.login_user
+    events:
+      - http:
+          path: usuarios/login
+          method: post
+
+  getUser:
+    handler: src/handlers/get_user.get_user
+    events:
+      - http:
+          path: usuarios/{id_usuario}
+          method: get
+          authorizer: jwtAuthorizer
+
+  updateUser:
+    handler: src/handlers/update_user.update_user
+    events:
+      - http:
+          path: usuarios/{id_usuario}
+          method: put
+          authorizer: jwtAuthorizer
+
+  deleteUser:
+    handler: src/handlers/delete_user.delete_user
+    events:
+      - http:
+          path: usuarios/{id_usuario}
+          method: delete
+          authorizer: jwtAuthorizer
