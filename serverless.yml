@@ -1,0 +1,250 @@
+service: gestion-vuelos
+
+provider:
+  name: aws
+  runtime: nodejs14.x # Runtime por defecto, se puede sobrescribir en cada función
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  environment:
+    USERS_TABLE: Usuarios
+    AEROLINEAS_TABLE: Aerolineas
+    VUELOS_TABLE: Vuelos
+    DESTINOS_TABLE: Destinos
+    COMPRAS_TABLE: Compras
+    REVIEWS_TABLE: Resenas
+
+functions:
+  # Funciones en Python para Usuarios
+  createUsuario:
+    handler: create_usuario.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /usuarios
+          method: post
+
+  searchUsuario:
+    handler: search_usuario.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /usuarios
+          method: get
+
+  updateUsuario:
+    handler: update_usuario.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /usuarios
+          method: put
+
+  deleteUsuario:
+    handler: delete_usuario.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /usuarios
+          method: delete
+
+  # Funciones en Python para Aerolíneas
+  createAerolinea:
+    handler: create_aerolinea.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /aerolineas
+          method: post
+
+  searchAerolinea:
+    handler: search_aerolinea.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /aerolineas
+          method: get
+
+  updateAerolinea:
+    handler: update_aerolinea.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /aerolineas
+          method: put
+
+  deleteAerolinea:
+    handler: delete_aerolinea.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /aerolineas
+          method: delete
+
+  # Funciones en Python para Vuelos
+  createVuelo:
+    handler: create_vuelo.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /vuelos
+          method: post
+
+  searchVuelo:
+    handler: search_vuelo.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /vuelos
+          method: get
+
+  updateVuelo:
+    handler: update_vuelo.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /vuelos
+          method: put
+
+  deleteVuelo:
+    handler: delete_vuelo.lambda_handler
+    runtime: python3.8
+    events:
+      - http:
+          path: /vuelos
+          method: delete
+
+  # Funciones en Node.js para Destinos
+  crearDestino:
+    handler: crearDestino.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /destinos
+          method: post
+          cors: true
+
+  obtenerDestinos:
+    handler: obtenerDestinos.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /destinos
+          method: get
+          cors: true
+
+  modificarDestino:
+    handler: modificarDestino.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /destinos
+          method: put
+          cors: true
+
+  eliminarDestino:
+    handler: eliminarDestino.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /destinos
+          method: delete
+          cors: true
+
+  # Funciones en Node.js para Compras
+  crearCompra:
+    handler: crearCompra.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /compras
+          method: post
+          cors: true
+
+  obtenerCompras:
+    handler: obtenerCompras.handler
+    runtime: nodejs14.x
+    events:
+      - http:
+          path: /compras
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    # Tabla Usuarios
+    UsuariosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_usuario
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_usuario
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Tabla Aerolíneas
+    AerolineasTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.AEROLINEAS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_aerolinea
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_aerolinea
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Tabla Vuelos
+    VuelosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.VUELOS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_vuelo
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_vuelo
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Tabla Destinos
+    DestinosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DESTINOS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_destino
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_destino
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Tabla Compras
+    ComprasTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.COMPRAS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_compra
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_compra
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # Tabla Reseñas
+    ReviewsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REVIEWS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id_resenia
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id_resenia
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
